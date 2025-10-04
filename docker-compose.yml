@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis-todo
+    command:
+      [
+        "redis-server",
+        "--appendonly","yes",
+        "--appendfsync","everysec",
+        "--save","900","1",
+        "--save","300","10",
+        "--save","60","10000"
+      ]
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - todo
+
+networks:
+  todo:
+    driver: bridge
+
+volumes:
+  redis_data:

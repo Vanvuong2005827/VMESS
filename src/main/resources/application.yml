@@ -1,0 +1,57 @@
+# App
+server:
+  port: ${PORT:8080}
+env:
+  url: ${BACKEND_URL:http://localhost:8080}
+
+
+spring:
+  application:
+    name: To-Do-Lists_V2
+
+  # Database
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vmess
+    username: postgres
+    password: Dinhvuong2005
+    hikari:
+      maximum-pool-size: 10
+
+  # Flyway
+  flyway:
+    #    baseline-on-migrate: true
+    enabled: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    locations: classpath:db/migration
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS-HOST:localhost}
+      port: ${REDIS-PORT:6379}
+## AOP
+application:
+  repository:
+    query-limit-warning-ms: 60
+
+## Jwt
+jwt:
+  secret: ${JWT_SECRET}
+  access:
+    expiration_time: 240
+  refresh:
+    expiration_time: 1440
+
+## redis variable
+app:
+  redis:
+    default-ttl-minute: 60
+
+## logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
