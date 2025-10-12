@@ -55,3 +55,7 @@ app:
 #    org:
 #      springframework:
 #        security: DEBUG
+logging:
+  level:
+    org.springframework.messaging: DEBUG
+    org.springframework.web.socket: DEBUG

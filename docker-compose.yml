@@ -3,7 +3,7 @@ version: "3.9"
 services:
   redis:
     image: redis:7-alpine
-    container_name: redis-todo
+    container_name: redis-vmess
     command:
       [
         "redis-server",
@@ -24,10 +24,39 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-      - todo
+      - vmess-net
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.3
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    networks:
+      - vmess-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.3
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+    networks:
+      - vmess-net
 
 networks:
-  todo:
+  vmess-net:
     driver: bridge
 
 volumes:

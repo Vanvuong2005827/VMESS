@@ -1,8 +1,12 @@
 package com.vuong.vmess.config;
 
 import com.vuong.vmess.constant.RoleConstant;
+import com.vuong.vmess.domain.entities.Conversation;
 import com.vuong.vmess.domain.entities.Role;
+import com.vuong.vmess.domain.enums.MessageType;
+import com.vuong.vmess.repository.ConversationRepository;
 import com.vuong.vmess.repository.RoleRepository;
+import com.vuong.vmess.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class DataInitializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
+    private final ConversationRepository conversationRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -19,6 +24,11 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.save(new Role(null, RoleConstant.ADMIN, null));
             roleRepository.save(new Role(null, RoleConstant.USER, null));
             roleRepository.save(new Role(null, RoleConstant.LEADER, null));
+        }
+
+        if (conversationRepository.count() == 0) {
+            conversationRepository.save(new Conversation(null, MessageType.GROUP));
+            conversationRepository.save(new Conversation(null, MessageType.PRIVATE));
         }
     }
 }

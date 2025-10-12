@@ -1,32 +1,28 @@
 package com.vuong.vmess.domain.entities;
 
 import com.github.f4b6a3.uuid.UuidCreator;
+import com.vuong.vmess.domain.enums.MessageType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
-@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "users")
-public class User {
+@Table(name = "conversations")
+public class Conversation {
     @Id
     UUID id;
-    String username;
-    String email;
-    String password;
-    LocalDateTime updated_at;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_USER_ROLE"))
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false, length=16)
+    MessageType type; // PRIVATE | GROUP
 
     @PrePersist
     void prePersist() {
